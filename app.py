@@ -1,40 +1,27 @@
 import dash
 import dash_core_components as dcc
-import dash_bootstrap_components as dbc
 import dash_html_components as html
-import plotly.graph_objs as go
 
-import numpy as np
+# for deployment, pass app.server (which is the actual flask app) to WSGI etc
+app = dash.Dash()
 
-from dash.dependencies import Input, Output
+app.layout = html.Div(children=[
+    html.H1(children='Hello Dash'),
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+    html.Div(children='''
+        Dash: A web application framework for Python.
+    '''),
 
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-
-graph = dcc.Graph(id='histogram_1')
-
-app.layout = html.Div([
-    dcc.Input(id='my-id', value=4, type='number'),
-    graph
-])
-
-@app.callback(
-    Output(component_id='histogram_1', component_property='figure'),
-    [Input(component_id='my-id', component_property='value')]
-)
-def update_output_div(input_value):
-    print(input_value)
-    x = np.random.poisson(input_value, 10000)
-    return go.Figure(
-        data=[
-            go.Histogram(
-                x=x,
-                histnorm='probability',
-                opacity=0.5)
-        ]
+    dcc.Graph(
+        id='example-graph',
+        figure={
+            'data': [
+                {'x': [1, 2, 3], 'y': [4, 1, 2], 'type': 'bar', 'name': 'SF'},
+                {'x': [1, 2, 3], 'y': [2, 4, 5], 'type': 'bar', 'name': u'Montréal'},
+            ],
+            'layout': {
+                'title': 'Dash Data Visualization'
+            }
+        }
     )
-
-
-if __name__ == '__main__':
-    app.run_server(debug=True)
+])
